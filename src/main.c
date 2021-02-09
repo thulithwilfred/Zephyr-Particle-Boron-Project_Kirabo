@@ -12,7 +12,6 @@
 #include "fonts.h"
 #include "ssd1306.h"
 
-/* TODO add thread support. */
 #define STACK_SIZE 1024
 #define THREAD_PRIORITY 5 /* Lower Numerics has higher priority, -Ve Priorities are cooperitive threads, +Ve Priorities  are Preemtible  */
 
@@ -20,6 +19,9 @@
 K_THREAD_DEFINE(tid_thread_blink_ext_led, STACK_SIZE, thread_blink_ext_led, NULL, NULL, NULL, THREAD_PRIORITY, 0, 0);
 K_THREAD_DEFINE(tid_thread_blink_brd_led, STACK_SIZE, thread_blink_brd_led, NULL, NULL, NULL, THREAD_PRIORITY, 0, 0);
 
+/* TODO: Add Support for a thread that controls SSD1306, learn Semaphores */
+
+/* This thread will blink the EXT_LED */
 void thread_blink_ext_led(void *unused1, void *unused2, void *unused3)
 {
 
@@ -33,6 +35,7 @@ void thread_blink_ext_led(void *unused1, void *unused2, void *unused3)
 	}
 }
 
+/* This thread will blink BRD_LED */
 void thread_blink_brd_led(void *unused1, void *unused2, void *unused3)
 {
 	bool led_is_on = true;
@@ -47,7 +50,6 @@ void thread_blink_brd_led(void *unused1, void *unused2, void *unused3)
 
 void main(void)
 {
-
 	/* Initialize Pheripherals */
 	setup();
 	/* Send message to display */
