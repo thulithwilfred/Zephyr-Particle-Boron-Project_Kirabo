@@ -13,32 +13,55 @@
 #include "ssd1306.h"
 
 /* TODO add thread support. */
+#define STACK_SIZE 1024
+#define THREAD_PRIORITY 5 /* Lower Numerics has higher priority, -Ve Priorities are cooperitive threads, +Ve Priorities  are Preemtible  */
 
-void main(void)
+/* Creating threads at compile time */
+K_THREAD_DEFINE(tid_thread_blink_ext_led, STACK_SIZE, thread_blink_ext_led, NULL, NULL, NULL, THREAD_PRIORITY, 0, 0);
+K_THREAD_DEFINE(tid_thread_blink_brd_led, STACK_SIZE, thread_blink_brd_led, NULL, NULL, NULL, THREAD_PRIORITY, 0, 0);
+
+void thread_blink_ext_led(void *unused1, void *unused2, void *unused3)
+{
+
+	bool led_is_on = true;
+
+	while (1)
+	{
+		gpio_pin_set(dev_gpio0, EXT_LED_PIN, !(int)led_is_on);
+		led_is_on = !led_is_on;
+		k_msleep(SLEEP_TIME_MS_1);
+	}
+}
+
+void thread_blink_brd_led(void *unused1, void *unused2, void *unused3)
 {
 	bool led_is_on = true;
-	setup();
-
-	/* Send message to display */
-	SSD1306_Hello();
 
 	while (1)
 	{
 		gpio_pin_set(dev_brd_led2, PIN, (int)led_is_on);
-		gpio_pin_set(dev_gpio0, EXT_LED_PIN, !(int)led_is_on);
 		led_is_on = !led_is_on;
-		k_msleep(SLEEP_TIME_MS);
+		k_msleep(SLEEP_TIME_MS_2);
 	}
+}
+
+void main(void)
+{
+
+	/* Initialize Pheripherals */
+	setup();
+	/* Send message to display */
+	SSD1306_Hello();
 }
 
 void SSD1306_Hello(void)
 {
 	SSD1306_GotoXY(10, 10);
-	SSD1306_Puts("very wow", &Font_11x18, 1);
+	SSD1306_Puts("Good Morning", &Font_11x18, 1);
 	SSD1306_GotoXY(10, 30);
 	SSD1306_Puts(">debug", &Font_7x10, 1);
 	SSD1306_GotoXY(10, 40);
-	SSD1306_Puts("0x69", &Font_7x10, 1);
+	SSD1306_Puts("0x69A", &Font_7x10, 1);
 
 	SSD1306_UpdateScreen();
 }

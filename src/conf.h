@@ -2,7 +2,8 @@
 #define _CONF_H
 
 /* 1000 msec = 1 sec */
-#define SLEEP_TIME_MS 1000
+#define SLEEP_TIME_MS_2 1000
+#define SLEEP_TIME_MS_1 100
 #define EXT_LED_PIN 31
 
 /* Device tree node identifier for GPIO0 */
@@ -46,5 +47,10 @@ int init_gpio(void);
 void setup(void);
 
 void SSD1306_Hello(void);
+
+/* Threads - Defined at compile time, using K_THREAD_DEFINE  */
+void thread_blink_ext_led(void *unused1, void *unused2, void *unused3);
+
+void thread_blink_brd_led(void *unused1, void *unused2, void *unused3);
 
 #endif
