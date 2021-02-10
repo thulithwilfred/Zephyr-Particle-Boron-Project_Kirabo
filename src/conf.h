@@ -11,7 +11,21 @@
 #if DT_NODE_HAS_STATUS(GP, okay)
 const struct device *dev_gpio0;
 #else
-#error "GPIO0 NODE ERROR"`
+#error "GPIO0 NODE ERROR"
+#endif
+
+/* Device tree node identifier for UART0 */
+#define UART0 DT_NODELABEL(uart0)
+#if DT_NODE_HAS_STATUS(UART0, okay)
+const struct device *dev_uart0;
+const struct uart_config uart_cfg = {
+    .baudrate = 9600,
+    .parity = UART_CFG_PARITY_NONE,
+    .stop_bits = UART_CFG_STOP_BITS_1,
+    .data_bits = UART_CFG_DATA_BITS_8,
+    .flow_ctrl = UART_CFG_FLOW_CTRL_NONE};
+#else
+#error "UART0 NODE ERROR"
 #endif
 
 /* Device tree node identifier for I2C0 */
@@ -47,6 +61,10 @@ int init_gpio(void);
 void setup(void);
 
 void SSD1306_Hello(void);
+
+int init_uart(void);
+
+static inline void write_uart_string(const char *str, const struct device *dev_uart);
 
 /* Threads - Defined at compile time, using K_THREAD_DEFINE  */
 void thread_blink_ext_led(void *unused1, void *unused2, void *unused3);
